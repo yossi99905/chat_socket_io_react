@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react'
 import { MessageBox } from "react-chat-elements"
 import io from 'socket.io-client'
-const socket = io.connect(process.env.REACT_APP_API_URL)
+const url = process.env.REACT_APP_API_URL
+
+const socket = io.connect(url)
+
 
 
 function Main() {
+ 
     const [msgList, setMsgList] = useState([])
     const onsub = (e) => {
         e.preventDefault()
-        console.log(e.target[0].value)
+      
         socket.emit('send_massge', { text: e.target[0].value , date: new Date(),dir:'left'})
 
         setMsgList(prevMsgList => [...prevMsgList, { text: e.target[0].value,dir:'right', date: new Date() }])
@@ -17,7 +21,7 @@ function Main() {
 
     useEffect(() => {
         socket.on('recive_massge', (data) => {
-            console.log(data)
+           
             setMsgList(prevMsgList => [...prevMsgList, { text: data.text, dir: data.dir, date: data.date }])
         })
         
